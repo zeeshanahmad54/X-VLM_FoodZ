@@ -13,9 +13,10 @@ from dataset.utils import pre_caption
 
 
 class re_train_dataset(Dataset):
-    def __init__(self, ann_file, transform, image_root, max_words=30):
+    def __init__(self, ann_file, transform, image_root, max_words=120):
         self.ann = []
         for f in ann_file:
+            print("file:", f )
             self.ann += json.load(open(f, 'r'))
         self.transform = transform
         self.image_root = image_root
@@ -24,6 +25,7 @@ class re_train_dataset(Dataset):
 
         n = 0
         for ann in self.ann:
+            # print("ann:", ann)
             img_id = ann['image_id']
             if img_id not in self.img_ids.keys():
                 self.img_ids[img_id] = n
@@ -40,13 +42,16 @@ class re_train_dataset(Dataset):
         image = Image.open(image_path).convert('RGB')
         image = self.transform(image)
 
-        caption = pre_caption(ann['caption'], self.max_words)
-
+        try:
+          caption = pre_caption(ann['caption'], self.max_words)
+        except:
+          # print("\nindex: ", index, "\nimg: ", ann['image'], "\ncaption: ", ann['caption'], type(ann['caption']))
+          caption = pre_caption(ann['caption'][0], self.max_words)
         return image, caption, self.img_ids[ann['image_id']]
 
 
 class re_eval_dataset(Dataset):
-    def __init__(self, ann_file, transform, image_root, max_words=30):
+    def __init__(self, ann_file, transform, image_root, max_words=120):
         self.ann = json.load(open(ann_file, 'r'))
         self.transform = transform
         self.image_root = image_root
