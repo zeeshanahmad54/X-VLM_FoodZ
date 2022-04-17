@@ -144,7 +144,8 @@ def run_nlvr2(load_nlvr_pretrain=False):
 def run_itr_flickr():
     dist_launch = get_dist_launch(args)
 
-    assert os.path.exists("images/flickr30k-images")
+#     assert os.path.exists("images/flickr30k-images")
+    assert os.path.exists("images")
 
     print("### Training Retrieval Flickr", flush=True)
     os.system(f"{dist_launch} "
