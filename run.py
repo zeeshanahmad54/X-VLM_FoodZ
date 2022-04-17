@@ -148,7 +148,7 @@ def run_itr_flickr():
 
     print("### Training Retrieval Flickr", flush=True)
     os.system(f"{dist_launch} "
-              "--use_env /content/X-VLM-master/Retrieval.py --config /content/X-VLM-master/configs/Retrieval_flickr.yaml "
+              "--use_env /content/X-VLM_FoodZ-master/Retrieval.py --config /content/X-VLM_FoodZ-master/configs/Retrieval_flickr.yaml "
               f"--output_dir {args.output_dir} --bs {args.bs} --checkpoint {args.checkpoint} {'--evaluate' if args.evaluate else ''}")
 
 
