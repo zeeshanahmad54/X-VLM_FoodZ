@@ -60,11 +60,11 @@ def train(model, data_loader, optimizer, tokenizer, epoch, device, scheduler, co
         if i>0 and i % save_every == 0:
             print("Saving checkpoint during training...")
             save_obj = {
-                        'model': model_without_ddp.state_dict(),
-                        # 'optimizer': optimizer.state_dict(),
-                        # 'lr_scheduler': lr_scheduler.state_dict(),
+                        'model': model.state_dict(),
+                        'optimizer': optimizer.state_dict(),
+                        'lr_scheduler': scheduler.state_dict(),
                         'config': config,
-                        # 'epoch': epoch,
+                        'epoch': epoch,
                     }
             torch.save(save_obj, os.path.join(args.output_dir, f'train_checkpoint_{i}.pth'))
 
