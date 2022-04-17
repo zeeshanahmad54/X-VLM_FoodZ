@@ -1,4 +1,4 @@
-train_file:  ['/content/FoodZ_Dataset/data/finetune/train_x-vlm_foodz_dataset.json.json']
+train_file:  ['/content/FoodZ_Dataset/data/finetune/train_x-vlm_foodz_dataset.json']
 val_file: '/content/FoodZ_Dataset/data/finetune/val_x-vlm_foodz_dataset.json'
 test_file: '/content/FoodZ_Dataset/data/finetune/test_x-vlm_foodz_dataset.json'
 image_root: '/content/FoodZ_Dataset/images/'
