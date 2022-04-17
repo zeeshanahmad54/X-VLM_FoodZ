@@ -57,8 +57,8 @@ def train(model, data_loader, optimizer, tokenizer, epoch, device, scheduler, co
         metric_logger.update(loss_itc=loss_itc.item())
         metric_logger.update(lr=optimizer.param_groups[0]["lr"])
         
-        if i % save_every == 0:
-            print("Saving checkpoint during training
+        if i>0 and i % save_every == 0:
+            print("Saving checkpoint during training...")
             save_obj = {
                         'model': model_without_ddp.state_dict(),
                         # 'optimizer': optimizer.state_dict(),
