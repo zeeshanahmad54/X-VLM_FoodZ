@@ -38,6 +38,7 @@ def train(model, data_loader, optimizer, tokenizer, epoch, device, scheduler, co
     header = 'Train Epoch: [{}]'.format(epoch)
     print_freq = 50
     step_size = 100
+    save_every = 5000
 
     for i, (image, text, idx) in enumerate(metric_logger.log_every(data_loader, print_freq, header)):
         image = image.to(device, non_blocking=True)
@@ -55,7 +56,19 @@ def train(model, data_loader, optimizer, tokenizer, epoch, device, scheduler, co
         metric_logger.update(loss_itm=loss_itm.item())
         metric_logger.update(loss_itc=loss_itc.item())
         metric_logger.update(lr=optimizer.param_groups[0]["lr"])
+        
+        if i % save_every == 0:
+            print("Saving checkpoint during training
+            save_obj = {
+                        'model': model_without_ddp.state_dict(),
+                        # 'optimizer': optimizer.state_dict(),
+                        # 'lr_scheduler': lr_scheduler.state_dict(),
+                        'config': config,
+                        # 'epoch': epoch,
+                    }
+            torch.save(save_obj, os.path.join(args.output_dir, f'train_checkpoint_{i}.pth'))
 
+        
     # gather the stats from all processes
     metric_logger.synchronize_between_processes()
     print("Averaged stats:", metric_logger.global_avg())     
