@@ -23,10 +23,10 @@ text_encoder: 'bert-base-uncased'  # ['data/bert-base-uncased', 'data/roberta-ba
 
 
 ## Training
-batch_size_train: 8
-batch_size_test: 8
+batch_size_train: 12
+batch_size_test: 12
 batch_size_test_text: 64
-max_tokens: 100
+max_tokens: 120
 embed_dim: 256
 temp: 0.07
 k_test: 128
