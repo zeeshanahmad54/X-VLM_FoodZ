@@ -402,12 +402,23 @@ class XVLMBase(nn.Module):
         Matching Loss with hard negatives
         """
         bs = image_embeds.size(0)
+        # print("bs:", bs)
         with torch.no_grad():
             sim_i2t = image_feat @ text_feat.t() / self.temp
             sim_t2i = text_feat @ image_feat.t() / self.temp
 
-            weights_i2t = F.softmax(sim_i2t, dim=1) + 1e-5
-            weights_t2i = F.softmax(sim_t2i, dim=1) + 1e-5
+            # weights_i2t = F.softmax(sim_i2t, dim=1) + 1e-5
+            weights_i2t = F.softmax(sim_i2t[:,:bs]+1e-4,dim=1)
+            
+            # print("weights_i2t", weights_i2t.shape, weights_i2t)
+            # print('nan values weights_i2t:', torch.sum(torch.isnan(weights_i2t)).item())
+
+
+            # weights_t2i = F.softmax(sim_t2i, dim=1) + 1e-5
+            weights_t2i = F.softmax(sim_t2i[:,:bs]+1e-4,dim=1)
+
+            # print("weights_t2i", weights_t2i.shape, weights_t2i)
+            # print('nan values weights_t2i:', torch.sum(torch.isnan(weights_t2i)).item())
 
             if idx is None:
                 weights_i2t.fill_diagonal_(0)
@@ -422,9 +433,16 @@ class XVLMBase(nn.Module):
         image_embeds_neg = []
         image_atts_neg = []
         for b in range(bs):
+          try:
             neg_idx = torch.multinomial(weights_t2i[b], 1).item()
-            image_embeds_neg.append(image_embeds[neg_idx])
-            image_atts_neg.append(image_atts[neg_idx])
+            
+          except:
+            print("neg_idx weights_t2i", weights_t2i)
+            print(" weights_t2i[b]", weights_t2i[b])
+            print("idx: ", idx)
+
+          image_embeds_neg.append(image_embeds[neg_idx])
+          image_atts_neg.append(image_atts[neg_idx])
 
         image_embeds_neg = torch.stack(image_embeds_neg, dim=0)
         image_atts_neg = torch.stack(image_atts_neg, dim=0)
@@ -433,6 +451,7 @@ class XVLMBase(nn.Module):
         text_atts_neg = []
         for b in range(bs):
             neg_idx = torch.multinomial(weights_i2t[b], 1).item()
+            # print("neg_idx weights_i2t", neg_idx)
             text_embeds_neg.append(text_embeds[neg_idx])
             text_atts_neg.append(text_atts[neg_idx])
 
