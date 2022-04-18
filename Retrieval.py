@@ -66,12 +66,22 @@ def train(model, data_loader, optimizer, tokenizer, epoch, device, scheduler, co
                         'config': config,
                         'epoch': epoch,
                     }
-            torch.save(save_obj, os.path.join(args.output_dir, f'train_checkpoint_{i}.pth'))
+            torch.save(save_obj, os.path.join(args.output_dir, f'train_checkpoint_{epoch}.pth'))
 
         
     # gather the stats from all processes
     metric_logger.synchronize_between_processes()
-    print("Averaged stats:", metric_logger.global_avg())     
+    print("Averaged stats:", metric_logger.global_avg())
+    
+    save_obj = {
+                'model': model.state_dict(),
+                'optimizer': optimizer.state_dict(),
+                'lr_scheduler': scheduler.state_dict(),
+                'config': config,
+                'epoch': epoch,
+            }
+    torch.save(save_obj, os.path.join(args.output_dir, f'train_epoch_{i}.pth'))
+        
     return {k: "{:.5f}".format(meter.global_avg) for k, meter in metric_logger.meters.items()}
 
 
